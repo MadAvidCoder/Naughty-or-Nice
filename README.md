@@ -1,4 +1,5 @@
 # North Pole Official API Manual  
+*Offical* API access is available to all elves via: [https://naughty_nice_tracker.david-ma-6877.workers.dev/](https://naughty_nice_tracker.david-ma-6877.workers.dev/)
 ## Santa's Naughty & Nice Tracker - *Elf Edition*
 
 > [!CAUTION]
