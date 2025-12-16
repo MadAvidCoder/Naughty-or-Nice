@@ -143,14 +143,15 @@ These endpoints allow recording of humans’ appeals of their recorded infractio
   - `personId` (number, **required**): The unique identifier of the human who lodged the appeal.
   - `infractionId` (number, **required**): The unique identifier of the infraction being appealed.
   - `appealText` (string, **required**): The human’s desperate plea for mercy.  
-    > [!WARNING]
-    > Elves may find the content emotionally distressing. *Or downright hilarious.*
 - **Returns:** The ID of the newly created appeal.
 - **Example Response:**
 ```json
 { "id": 15 }
 ```
 - **Permissions:** **HAPRE** *(Holiday Adjudication and Petition Review Executive)* clearance required.
+> [!WARNING]
+> Elves may find the content of `appealText` emotionally distressing. *Or downright hilarious.*
+
 
 ### GET `/api/appeals/pending`
 
