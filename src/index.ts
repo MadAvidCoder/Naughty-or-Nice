@@ -40,8 +40,8 @@ app.patch('/api/people/:id', async (c) => {
     const isNice = body?.isNice
     const reason = body?.reason?.toString() ?? ""
 
-    if (body?.isNice === undefined) return c.json({ error: "`isNice is required" }, 400)
-    if (typeof body.isNice !== "boolean") return c.json({ error: "isNice must be a boolean" }, 400)
+    if (isNice === undefined) return c.json({ error: "isNice is required" }, 400)
+    if (typeof isNice !== "boolean") return c.json({ error: "isNice must be a boolean" }, 400)
     
     return c.json(judgePerson(id,isNice, reason))
 })
@@ -101,8 +101,8 @@ app.patch('/api/appeals/:id/review', async (c) => {
     const body = await c.req.json().catch(() => null)
     const approved = body?.approved
 
-    if (body?.approved === undefined) return c.json({ error: "approved is required" }, 400)
-    if (typeof body.approved !== "boolean") return c.json({ error: "approved must be a boolean" }, 400)
+    if (approved === undefined) return c.json({ error: "approved is required" }, 400)
+    if (typeof approved !== "boolean") return c.json({ error: "approved must be a boolean" }, 400)
 
     return c.json(reviewAppeal(appealId, approved))
 })
