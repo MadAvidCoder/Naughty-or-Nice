@@ -1,6 +1,6 @@
 import { db } from "./index"
 import { people, infractions, appeals } from "./schema"
-import { eq, desc } from "drizzle-orm"
+import { eq, desc, sql } from "drizzle-orm"
 
 // People Queries
 
@@ -21,7 +21,16 @@ export function addPerson(name: string, is_nice?: boolean, reason?: string) {
         checkedAt: timestamp,
     }).run()
 
-    return { ok: true }
+    const row = db
+    .select({ id: sql<number>`last_insert_rowid()` })
+    .from(people)
+    .get()
+
+    if (!row) {
+        return { id: -1 }
+    }
+
+    return { id: row.id }
 }
 
 export function judgePerson(id: number, isNice: boolean, reason?: string) {
@@ -53,7 +62,16 @@ export function addInfraction(personId: number, description: string, severity: n
         occurredAt: new Date(),
     }).run()
 
-    return { ok: true }
+    const row = db
+    .select({ id: sql<number>`last_insert_rowid()` })
+    .from(infractions)
+    .get()
+
+    if (!row) {
+        return { id: -1 }
+    }
+
+    return { id: row.id }
 }
 
 // Appeals
@@ -66,7 +84,17 @@ export function createAppeal(personId: number, infractionId: number, appealText:
         status: 0,
         submittedAt: new Date(),
     }).run()
-    return { ok: true }
+    
+    const row = db
+    .select({ id: sql<number>`last_insert_rowid()` })
+    .from(appeals)
+    .get()
+    
+    if (!row) {
+        return { id: -1 }
+    }
+
+    return { id: row.id }
 }
 
 export function listPendingAppeals() {
