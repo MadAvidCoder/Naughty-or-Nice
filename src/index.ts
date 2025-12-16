@@ -9,6 +9,7 @@ app.get('/', (c) => {
 `North Pole Official API Manual: Santa's Naughty & Nice Tracker - Elf Edition
 
 WARNING: This manual is the property of S. GIFT INC. (Santa's Grand Institute of Festive Transparency Incorporated). For internal use only. Any elves found to be endpoints above their clearance level (especially those marked SACK or SUPREME) will face punitive action, including untangling Christmas lights in sub-zero temperatures. Please read carefully.
+
 ------------------------------
 
 Section 1: People Management (aka The Naughty & Nice List)
