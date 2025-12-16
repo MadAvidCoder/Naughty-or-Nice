@@ -12,12 +12,12 @@ export function getPersonById(id: number) {
     return db.select().from(people).where(eq(people.id, id)).limit(1).get()
 }
 
-export function addPerson(name: string) {
+export function addPerson(name: string, is_nice?: boolean, reason?: string) {
     const timestamp = new Date()
     db.insert(people).values({
         name,
-        isNice: true,
-        reason: "",
+        isNice: is_nice ?? true,
+        reason: reason ?? "",
         checkedAt: timestamp,
     }).run()
 
