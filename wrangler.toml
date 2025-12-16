@@ -1,0 +1,16 @@
+name = "naughty_nice_tracker"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "naughty-nice"
+database_id = "e48490ae-563a-402c-9041-e5302b3f917a"
+
+## DEBUGGING 
+# [observability]
+# [observability.logs]
+# enabled = true
+# head_sampling_rate = 1
+# invocation_logs = true
+# persist = true

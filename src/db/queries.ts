@@ -1,27 +1,27 @@
-import { db } from "./index"
 import { people, infractions, appeals } from "./schema"
 import { eq, desc, sql } from "drizzle-orm"
+import { drizzle, AnyD1Database } from "drizzle-orm/d1"
 
 // People Queries
 
-export function getAllPeople() {
-    return db.select().from(people).orderBy(desc(people.checkedAt)).all()
+export async function getAllPeople(db: AnyD1Database) {
+    return await drizzle(db).select().from(people).orderBy(desc(people.checkedAt)).all()
 }
 
-export function getPersonById(id: number) {
-    return db.select().from(people).where(eq(people.id, id)).limit(1).get()
+export async function getPersonById(db: AnyD1Database, id: number) {
+    return await drizzle(db).select().from(people).where(eq(people.id, id)).limit(1).get()
 }
 
-export function addPerson(name: string, is_nice?: boolean, reason?: string) {
+export async function addPerson(db: AnyD1Database, name: string, is_nice?: boolean, reason?: string) {
     const timestamp = new Date()
-    db.insert(people).values({
+    await drizzle(db).insert(people).values({
         name,
         isNice: is_nice ?? true,
         reason: reason ?? "",
         checkedAt: timestamp,
     }).run()
 
-    const row = db
+    const row = await drizzle(db)
     .select({ id: sql<number>`last_insert_rowid()` })
     .from(people)
     .get()
@@ -33,8 +33,8 @@ export function addPerson(name: string, is_nice?: boolean, reason?: string) {
     return { id: row.id }
 }
 
-export function judgePerson(id: number, isNice: boolean, reason?: string) {
-    db.update(people).set({
+export async function judgePerson(db: AnyD1Database, id: number, isNice: boolean, reason?: string) {
+   await drizzle(db).update(people).set({
         isNice,
         reason: reason || "",
         checkedAt: new Date(),
@@ -43,26 +43,26 @@ export function judgePerson(id: number, isNice: boolean, reason?: string) {
     return { ok: true }
 }
 
-export function deletePerson(id: number) {
-    db.delete(people).where(eq(people.id, id)).run()
+export async function deletePerson(db: AnyD1Database, id: number) {
+    await drizzle(db).delete(people).where(eq(people.id, id)).run()
     return { ok: true }
 }
 
 // Infractions Queries
 
-export function getInfractionsByPersonId(personId: number) {
-    return db.select().from(infractions).where(eq(infractions.personId, personId)).orderBy(desc(infractions.occurredAt)).all()
+export async function getInfractionsByPersonId(db: AnyD1Database, personId: number) {
+    return await drizzle(db).select().from(infractions).where(eq(infractions.personId, personId)).orderBy(desc(infractions.occurredAt)).all()
 }
 
-export function addInfraction(personId: number, description: string, severity: number = 1) {
-    db.insert(infractions).values({
+export async function addInfraction(db: AnyD1Database, personId: number, description: string, severity: number = 1) {
+    await drizzle(db).insert(infractions).values({
         personId,
         description,
         severity,
         occurredAt: new Date(),
     }).run()
 
-    const row = db
+    const row = await drizzle(db)
     .select({ id: sql<number>`last_insert_rowid()` })
     .from(infractions)
     .get()
@@ -76,8 +76,8 @@ export function addInfraction(personId: number, description: string, severity: n
 
 // Appeals
 
-export function createAppeal(personId: number, infractionId: number, appealText: string) {
-    db.insert(appeals).values({
+export async function createAppeal(db: AnyD1Database, personId: number, infractionId: number, appealText: string) {
+    await drizzle(db).insert(appeals).values({
         personId,
         infractionId,
         appealText,
@@ -85,7 +85,7 @@ export function createAppeal(personId: number, infractionId: number, appealText:
         submittedAt: new Date(),
     }).run()
     
-    const row = db
+    const row = await drizzle(db)
     .select({ id: sql<number>`last_insert_rowid()` })
     .from(appeals)
     .get()
@@ -97,15 +97,14 @@ export function createAppeal(personId: number, infractionId: number, appealText:
     return { id: row.id }
 }
 
-export function listPendingAppeals() {
-    return db.select().from(appeals).where(eq(appeals.status, 0)).orderBy(desc(appeals.submittedAt)).all()
+export async function listPendingAppeals(db: AnyD1Database) {
+    return await drizzle(db).select().from(appeals).where(eq(appeals.status, 0)).orderBy(desc(appeals.submittedAt)).all()
 }
 
-export function reviewAppeal(appealId: number, approved: boolean) {
+export async function reviewAppeal(db: AnyD1Database, appealId: number, approved: boolean) {
     const new_status = approved ? 1 : 2
 
-    db.update(appeals).set({ status: new_status }).where(eq(appeals.id, appealId)).run()
+    await drizzle(db).update(appeals).set({ status: new_status }).where(eq(appeals.id, appealId)).run()
 
     return { ok: true }
 }
-
