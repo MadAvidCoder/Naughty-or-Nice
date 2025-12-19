@@ -1,7 +1,8 @@
 import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core"
 
 export const people = sqliteTable("people", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: integer("id")
+      .primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   isNice: integer("is_nice", { mode: "boolean" }).notNull().default(true),
   reason: text("reason"),
