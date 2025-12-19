@@ -1,3 +1,166 @@
+# Naughty or Nice API
+**[https://naughty_nice_tracker.david-ma-6877.workers.dev/](https://naughty_nice_tracker.david-ma-6877.workers.dev/)**
+
+For Day 4, I've adapted the API to keep track of who's been naughty and nice this year. I used three tables, one to jeep track of the people, one for their 'infractions' (naughty deeds), and one where they can submit appeals for why they shouldn't be on the naughty list.
+
+Here are the different endpoints, and their parameters. *If you want to read a more fun (but AI) generated version of the instructions, scroll to the bottom!*
+
+---
+
+## People Endpoints (Table 1)
+
+### GET `/api/people`
+- **Description:** Get the list of people and whether theyre naughty or nice.
+- **Parameters:** None
+- **Returns:** JSON array of all people records.
+- **Example Response:**
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Candy Cane",
+      "isNice": true,
+      "reason": "Helped an old lady cross the street",
+      "checkedAt": "2024-12-01T10:00:00Z"
+    },
+    ...
+  ]
+  ```
+
+### GET `/api/people/:id`
+
+- **Description:** Retrieve all information about a specific person by their ID.
+- **Parameters:**
+    - `id` (number): The unique identifier of the human.
+- **Returns:** JSON object of the person’s record.
+- **Example Response:**
+```json
+{
+  "id": 1,
+  "name": "Candy Cane",
+  "isNice": true,
+  "reason": "Helped an old lady cross the street",
+  "checkedAt": "2024-12-01T10:00:00Z"
+}
+```
+
+### POST `/api/people`
+
+- **Description:** Add a new entry on the Naughty & Nice list.
+- **Body:**
+    - `name` (string, **required**): The name of the new person.
+    - `isNice` (boolean, optional): Initial status (default: `true`).
+    - `reason` (string, optional): Reason for the initial status.
+- **Returns:** The newly created person’s ID
+- **Example Response:**
+```json
+{ "id": 42 }
+```
+
+### PATCH `/api/people/:id`
+
+- **Description:** Revise the naughty/nice status of a person on the list
+- **Parameters:**
+    - `id` (number): The unique identifier of the human.
+- **Body:**
+    - `isNice` (boolean, **required**): Official verdict.
+    - `reason` (string, optional): Reason for the judgement.
+- **Returns:** `{ "ok": true }` on success.
+
+### DELETE `/api/people/:id`
+
+- **Description:** Remove an entry from the Naughty & Nice list.
+- **Parameters:**
+    - `id` (number): The unique identifier of the person to be removed.
+- **Returns:** `{ "ok": true }` on success.
+
+---
+
+## Infractions Endpoints (Table 2)
+
+### GET `/api/people/:id/infractions`
+
+- **Description:** View the naughty deeds recorded against a specific person.
+- **Parameters:**
+    - `id` (number): The unique identifier of the person to be checked.
+- **Returns:** JSON array of infractions.
+- **Example Response:**
+```json
+[
+  {
+    "id": 5,
+    "personId": 17,
+    "description": "Stole cookies from the cookie jar",
+    "severity": 3,
+    "occurredAt": "2024-11-30T15:30:00Z"
+  },
+  ...
+]
+```
+
+### POST `/api/people/:id/infractions`
+
+- **Description:** Record a new infraction against a person.
+- **Parameters:**
+    - `id` (number): The unique identifier of the person.
+- **Body:**
+    - `description` (string, **required**): Description of the naughty deed.
+    - `severity` (number, *optional*): Severity level from `1` (minor) to `5` (very naughty). *(default: 1)*
+- **Returns:** The ID of the newly created infraction.
+- **Example Response:**
+```json
+{ "id": 38 }
+```
+
+---
+
+## Appeals Endpoints (Table 3)
+
+### POST `/api/appeals`
+
+- **Description:** Submit an appeal for a recorded infraction.
+- **Body:**
+    - `personId` (number, **required**): The unique identifier of the person making the appeal.
+    - `infractionId` (number, **required**): The unique identifier of the infraction being appealed.
+    - `appealText` (string, **required**): Why you think the infraction shouldn't be counted,
+- **Returns:** The ID of the newly created appeal.
+- **Example Response:**
+```json
+{ "id": 15 }
+```
+
+### GET `/api/appeals/pending`
+
+- **Description:** Retrieve all appeals awaiting judgement (whether they are accepted or not)
+- **Parameters:** None
+- **Returns:** JSON array of all pending appeals.
+- **Example Response:**
+```json
+[
+  {
+    "id": 15,
+    "personId": 5,
+    "infractionId": 28,
+    "appealText": "I swear I was just borrowing the cookies!",
+    "status": 0,
+    "submittedAt": "2024-12-02T12:00:00Z"
+  }
+]
+```
+
+### PATCH `/api/appeals/:id/review`
+
+- **Description:** Decide whether the appeal should be accepted.
+- **Parameters:**
+    - `id` (number): The unique identifier of the appeal.
+- **Body:**
+    - `approved` (boolean, **required**): Whether the appeal is acceptable.
+- **Returns:** `{ "ok": true }` on success.
+
+
+<details>
+<summary>Dropdown for a Themed Version of the manual (AI Generated btw)</summary>
+
 # North Pole Official API Manual  
 *Official* API access is available to all elves via: [https://naughty_nice_tracker.david-ma-6877.workers.dev/](https://naughty_nice_tracker.david-ma-6877.workers.dev/)
 ## Santa's Naughty & Nice Tracker - *Elf Edition*
@@ -201,3 +364,5 @@ Thank you for your continued service to holiday order, moral accountability, and
 
 > [!NOTE]
 > 🎄 End of *official* **S. GIFT INC.** manual🎄
+
+</details>

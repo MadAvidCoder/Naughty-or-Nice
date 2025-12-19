@@ -75,7 +75,7 @@ export async function getInfractionsByPersonId(db: AnyD1Database, personId: numb
         .all()
 }
 
-export async function addInfraction(db: AnyD1Database, personId: number, description: string, severity: number = 1) {
+export async function addInfraction(db: AnyD1Database, personId: number, description: any, severity: number = 1) {
     const res = await drizzle(db)
         .insert(infractions).values({
             personId,
@@ -111,7 +111,7 @@ export async function listPendingAppeals(db: AnyD1Database) {
     return await drizzle(db).select().from(appeals).where(eq(appeals.status, 0)).orderBy(desc(appeals.submittedAt)).all()
 }
 
-export async function reviewAppeal(db: AnyD1Database, appealId: number, approved: boolean) {
+export async function reviewAppeal(db: AnyD1Database, appealId: number, approved: boolean | number) {
     const new_status: number = approved ? 1 : 2
 
     await drizzle(db)

@@ -13,101 +13,135 @@ const app = new Hono()
 // Default Route / instructions
 app.get('/', (c) => {
     return c.text(
-`North Pole Official API Manual: Santa's Naughty & Nice Tracker - Elf Edition
+`People Endpoints (Table 1)
 
-WARNING: This manual is the property of S. GIFT INC. (Santa's Grand Institute of Festive Transparency Incorporated). For internal use only. Any elves found to be usnig endpoints above their clearance level (especially those marked SACK or SUPREME) will face punitive action, including untangling Christmas lights in sub-zero temperatures. Please read carefully.
+GET /api/people
+- Description: Get the list of people and whether theyre naughty or nice.
+- Parameters: None
+- Returns: JSON array of all people records.
+- Example Response:
+    [
+      {
+        "id": 1,
+        "name": "Candy Cane",
+        "isNice": true,
+        "reason": "Helped an old lady cross the street",
+        "checkedAt": "2024-12-01T10:00:00Z"
+      },
+      ...
+    ]
+  
 
-------------------------------
+GET /api/people/:id
+- Description: Retrieve all information about a specific person by their ID.
+- Parameters:
+    - id (number): The unique identifier of the human.
+- Returns: JSON object of the person’s record.
+- Example Response:
+    {
+      "id": 1,
+      "name": "Candy Cane",
+      "isNice": true,
+      "reason": "Helped an old lady cross the street",
+      "checkedAt": "2024-12-01T10:00:00Z"
+    }
 
-Section 1: People Management (aka The Naughty & Nice List)
-These endpoints are used for tracking humans Naughty & Nice statuses, especially for when deciding who deserves coal.
 
-- GET /api/people:
-    - Description: Retrieve the full list of humans and their current status (naughty or nice).
-    - Parameters: None
-    - Returns: JSON array of all people records.
-        - Example Response: [{ id: 1, name: "Candy Cane", isNice: true, reason: "Helped an old lady cross the street", checkedAt: "2024-12-01T10:00:00Z" }, ...]
-    - Permissions: Elf-level security clearance required.
-- GET /api/people/:id:
-    - Description: Retrieve detailed information about a specific human by their ID.
-    - Parameters: id (number) - The unique identifier of the human.
-    - Returns: JSON object of the person's record.
-        - Example Response: { id: 1, name: "Candy Cane", isNice: true, reason: "Helped an old lady cross the street", checkedAt: "2024-12-01T10:00:00Z" }
-    - Permissions: Elf-level security clearance required.
-- POST /api/people:
-    - Description: Add a new human to the Naughty & Nice list.
-    - Body:
-        - name (string, required): The name of the human.
-        - isNice (boolean, optional): Initial status (default: true).
-        - reason (string, optional): Reason for the initial status.
-    - Returns: The newly created person's id.
-        - Example Response: { id: 42 }
-    - Permissions: SLEIGH (Santa's List Editing and General Handling) clearance required.
-- PATCH /api/people/:id:
-    - Description: Make a judgement on a human. Naughty or nice?
-    - Parameters: id (number) - The unique identifier of the human.
-    - Body:
-        - isNice (boolean, required): Official Verdict.
-        - reason (string, optional): Reason for the judgement.
-    - Returns: { ok: true } on success.
-    - Permissions: STRICTLY FOR USE BY SANTA ONLY. SACK (Supreme Archival Control Keeper) clearance required.
-- DELETE /api/people/:id:
-    - Description: Remove a human from the Naughty & Nice list (for exceptional cases only).
-    - Parameters: id (number) - The unique identifier of the human.
-    - Returns: { ok: true } on success.
-    - Permissions: DELETE (Data Erasure and Ledger Editing Taskforce Executive) clearance required.
+POST /api/people
+- Description: Add a new entry on the Naughty & Nice list.
+- Body:
+    - name (string, required): The name of the new person.
+    - isNice (boolean, optional): Initial status (default: true).
+    - reason (string, optional): Reason for the initial status.
+- Returns: The newly created person’s ID
+- Example Response:
+{ "id": 42 }
 
-------------------------------
 
-Section 2: Infraction Management
-These endpoints handle the recording of naughty behaviors, in case further judgement is needed.
+PATCH /api/people/:id
+- Description: Revise the naughty/nice status of a person on the list
+- Parameters:
+    - id (number): The unique identifier of the human.
+- Body:
+    - isNice (boolean, required): Official verdict.
+    - reason (string, optional): Reason for the judgement.
+- Returns: { "ok": true } on success.
 
-- GET /api/people/:id/infractions:
-    - Description: View the naughty deeds recorded against a specific human.
-    - Parameters: id (number) - The unique identifier of the human.
-    - Returns: JSON array of infractions. 
-        - Example Response: [{ id: 1, personId: 1, description: "Stole cookies from the cookie jar", severity: 3, occurredAt: "2024-11-30T15:30:00Z" }, ...]
-    - Permissions: Elf-level security clearance required.
+DELETE /api/people/:id
+- Description: Remove an entry from the Naughty & Nice list.
+- Parameters:
+    - id (number): The unique identifier of the person to be removed.
+- Returns: { "ok": true } on success.
 
-- POST /api/people/:id/infractions:
-    - Description: Record a new infraction against a human.
-    - Parameters: id (number) - The unique identifier of the human.
-    - Body:
-        - description (string, required): Description of the naughty deed.
-        - severity (number, optional): Severity level from 1 (minor) to 5 (coal-worthy). (default: 1).
-    - Returns: The id of the newly created infraction.
-        - Example Response: { id: 28 }
-    - Permissions: SCROOGE (Santa's Comprehensive Recorders Of Overtly Grievous Events) clearance required.
 
-------------------------------
 
-Section 3: Appeal Management
-These endpoints allow recording of humans' appeals of their recorded infractions to the JINGLE (Judicial Intervention and Nice-list Granting Logic Engine) database, for Santa's reconsideration (and possibly elf entertainment). 
+Infractions Endpoints (Table 2)
 
-- POST /api/appeals:
-    - Description: Submit a received appeal for a recorded infraction.
-    - Body:
-        - personId (number, required): The unique identifier of the human who lodged the appeal.
-        - infractionId (number, required): The unique identifier of the infraction being appealed.
-        - appealText (string, required): The human's desperate plea for mercy. (WARNING: Elves may find the content emotionally distressing. Or downright hilarious.)
-    - Returns: The id of the newly created appeal.
-        - Example Response: { id: 15 }
-    - Permissions: HAPRE (Holiday Adjudication and Petition Review Executive) clearance required.
+GET /api/people/:id/infractions
+- Description: View the naughty deeds recorded against a specific person.
+- Parameters:
+    - id (number): The unique identifier of the person to be checked.
+- Returns: JSON array of infractions.
+- Example Response:
+    [
+      {
+        "id": 5,
+        "personId": 17,
+        "description": "Stole cookies from the cookie jar",
+        "severity": 3,
+        "occurredAt": "2024-11-30T15:30:00Z"
+      },
+      ...
+    ]
 
-- GET /api/appeals/pending:
-    - Description: Retrieve all pending appeals awaiting Santa's judgement.
-    - Parameters: None
-    - Returns: A JSON array of all pending appeals.
-        - Example Response: [{ id: 15, personId: 5, infractionId: 28, appealText: "I swear I was just borrowing the cookies!", status: 0, submittedAt: "2024-12-02T12:00:00Z" }, ...]
-    - Permissions: Elf-level security clearance required.
-    
-- PATCH /api/appeals/:id/review:
-    - Description: Lodge the final decision on a pending appeal.
-    - Parameters: id (number) - The unique identifier of the appeal.
-    - Body:
-        - approved (boolean, required): Santa's final decision on the appeal.
-    - Returns: { ok: true } on success.
-    - Permissions: STRICTLY FOR USE BY SANTA ONLY. SUPREME (Santa's Ultimate Petition Review and Evaluation Management Execution) clearance required.`)
+
+POST /api/people/:id/infractions
+- Description: Record a new infraction against a person.
+- Parameters:
+    - id (number): The unique identifier of the person.
+- Body:
+    - description (string, required): Description of the naughty deed.
+    - severity (number, *optional*): Severity level from 1 (minor) to 5 (very naughty). *(default: 1)*
+- Returns: The ID of the newly created infraction.
+- Example Response:{ "id": 38 }
+
+
+
+Appeals Endpoints (Table 3)
+
+POST /api/appeals
+- Description: Submit an appeal for a recorded infraction.
+- Body:
+    - personId (number, required): The unique identifier of the person making the appeal.
+    - infractionId (number, required): The unique identifier of the infraction being appealed.
+    - appealText (string, required): Why you think the infraction shouldn't be counted,
+- Returns: The ID of the newly created appeal.
+- Example Response: { "id": 15 }
+
+GET /api/appeals/pending
+- Description: Retrieve all appeals awaiting judgement (whether they are accepted or not)
+- Parameters: None
+- Returns: JSON array of all pending appeals.
+- Example Response:
+[
+  {
+    "id": 15,
+    "personId": 5,
+    "infractionId": 28,
+    "appealText": "I swear I was just borrowing the cookies!",
+    "status": 0,
+    "submittedAt": "2024-12-02T12:00:00Z"
+  }
+]
+
+PATCH /api/appeals/:id/review
+- Description: Decide whether the appeal should be accepted.
+- Parameters:
+    - id (number): The unique identifier of the appeal.
+- Body:
+    - approved (boolean, required): Whether the appeal is acceptable.
+- Returns: { "ok": true } on success.
+`)
 })
 
 // People Routes
@@ -149,7 +183,14 @@ app.patch('/api/people/:id', async (c: Context<{ Bindings: Env }>) => {
         return c.json({ error: "isNice must be a boolean" }, 400)
     }
     
-    return c.json(await judgePerson(c.env.DB, id, isNice, reason))
+    return c.json(
+        await judgePerson(
+            c.env.DB,
+            id,
+            isNice,
+            reason
+        )
+    )
 })
 
 app.delete('/api/people/:id', async (c: Context<{ Bindings: Env }>) => {
