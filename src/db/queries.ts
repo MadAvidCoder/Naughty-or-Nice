@@ -76,21 +76,16 @@ export async function getInfractionsByPersonId(db: AnyD1Database, personId: numb
 }
 
 export async function addInfraction(db: AnyD1Database, personId: number, description: string, severity: number = 1) {
-    await drizzle(db)
+    const res = await drizzle(db)
         .insert(infractions).values({
             personId,
             description,
             severity,
             occurredAt: new Date(),
         })
-        .run()
+        .returning()
 
-    const row = await drizzle(db)
-        .select({ id: sql<number>`last_insert_rowid()` })
-        .from(infractions)
-        .get()
-
-    return { id: row!.id }
+    return { id: res[0].id }
 }
 
 // Appeals db

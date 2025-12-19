@@ -10,7 +10,7 @@ interface Env {
 
 const app = new Hono()
 
-// Default Route
+// Default Route / instructions
 app.get('/', (c) => {
     return c.text(
 `North Pole Official API Manual: Santa's Naughty & Nice Tracker - Elf Edition
@@ -112,9 +112,7 @@ These endpoints allow recording of humans' appeals of their recorded infractions
 
 // People Routes
 
-app.get('/api/people', async (c: Context<{ Bindings: Env }>) => {
-    return c.json(await getAllPeople(c.env.DB))
-})
+app.get('/api/people', async (c: Context<{ Bindings: Env }>) => c.json(await getAllPeople(c.env.DB)))
 
 app.get('/api/people/:id', async (c: Context<{ Bindings: Env }>) => {
     const id: number = Number(c.req.param('id'))
@@ -184,9 +182,7 @@ app.post('/api/people/:id/infractions', async (c: Context<{ Bindings: Env }>) =>
     const description = (body?.description ?? "").toString()
     const severity = Number(body?.severity ?? 1)
 
-    if (!description) {
-        return c.json({ error: "Description required" }, 400)
-    }
+    if (!description) {return c.json({ error: "Description required" }, 400)}
     
     return c.json(await addInfraction(c.env.DB, personId, description, severity))
 })
@@ -207,7 +203,9 @@ app.post('/api/appeals', async (c: Context<{ Bindings: Env }>) => {
 })
 
 app.get('/api/appeals/pending', async (c: Context<{ Bindings: Env }>) => {
-    return c.json(await listPendingAppeals(c.env.DB))
+    return c.json(
+        await listPendingAppeals(c.env.DB)
+    )
 })
 
 app.patch('/api/appeals/:id/review', async (c: Context<{ Bindings: Env }>) => {
